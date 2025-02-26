@@ -38,7 +38,12 @@ userFields = {
 class Users(Resource):
     @marshal_with(userFields)
     def get(self):
-        return UserModel.query.all(), 200
+        users = UserModel.query.all()
+
+        if not users:
+            return [], 204
+        
+        return users, 200
 
     # reforce this concept later
     def post(self):
@@ -46,9 +51,42 @@ class Users(Resource):
         user = UserModel(name=args["name"], email=args["email"]) # converts args to data
         db.session.add(user) # change
         db.session.commit() # apply
-        users = UserModel.query.all()
         return user, 201
 
+class User(Resource):
+    @marshal_with(userFields)
+    def get(self, id):
+        user = UserModel.query.filter_by(id=id).first()
+        if not user:
+            abort(404, "User not found! :(")
+        return user
+    
+    @marshal_with(userFields)
+    def put(self, id):
+        user = UserModel.query.filter_by(id=id).first()
+
+        if not user:
+            abort(404, "User not found! :(")
+
+        args = user_args.parse_args()
+        updated_user = UserModel(name=args["name"], email=args["email"])
+
+        user.name = updated_user.name
+        user.email = updated_user.email
+
+        db.session.commit()
+        return user
+    
+    @marshal_with(userFields)
+    def delete(self, id):
+        user = UserModel.query.filter_by(id=id).first()
+
+        if not user:
+            abort(404, "User not found! :(")
+
+        db.session.delete(user)
+        db.session.commit()
+        return user, 204
 
 """Routes"""
 @app.route('/')
@@ -58,6 +96,7 @@ def home():
 
 """Endpoints"""
 api.add_resource(Users, '/users/') # function <- endpoint
+api.add_resource(User, '/users/<int:id>')
 
 
 """Aplication initializer"""
