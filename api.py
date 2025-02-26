@@ -38,7 +38,7 @@ userFields = {
 class Users(Resource):
     @marshal_with(userFields)
     def get(self):
-        return UserModel.query.all()
+        return UserModel.query.all(), 200
 
     # reforce this concept later
     def post(self):
@@ -46,6 +46,8 @@ class Users(Resource):
         user = UserModel(name=args["name"], email=args["email"]) # converts args to data
         db.session.add(user) # change
         db.session.commit() # apply
+        users = UserModel.query.all()
+        return user, 201
 
 
 """Routes"""
