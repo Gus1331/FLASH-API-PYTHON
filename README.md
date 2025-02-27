@@ -1,4 +1,4 @@
-# FLASH API Python
+# FLASK API Python
 
 Este é o meu primeiro projeto de desenvolvimento de uma **API RESTful** utilizando **Python**. O objetivo principal desse projeto foi praticar e aprender como construir uma API utilizando o **Flask**, **SQLAlchemy** para manipulação de banco de dados e **Flask-RESTful** para criar recursos RESTful de forma simples e eficiente.
 
